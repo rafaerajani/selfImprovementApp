@@ -1,0 +1,15 @@
+# Dependencies — rebuilt from package.json / package-lock.json by `npm install`
+node_modules/
+
+# Secrets and environment config — must never be committed
+.env
+.env.*
+!.env.example
+
+# Build output — regenerated every time the app is built
+dist/
+build/
+
+# OS and log junk
+.DS_Store
+*.log
