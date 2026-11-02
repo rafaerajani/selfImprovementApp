@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum HabitPeriod {
+  DAILY
+  WEEKLY
+}
+
+enum HabitStage {
+  NOT_STARTED
+  IN_PROGRESS
+  MASTERED
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  username      String   @unique
+  timeZone      String   @default("Australia/Sydney")
+  notifyByPush  Boolean  @default(true)
+  notifyByEmail Boolean  @default(false)
+  snoozeLimit   Int      @default(3)
+  createdAt     DateTime @default(now())
+
+  habits Habit[]
+
+  @@map("users")
+}
+
+model Habit {
+  id           String      @id @default(uuid())
+  userId       String
+  name         String
+  description  String?
+  period       HabitPeriod
+  unit         String
+  stage        HabitStage  @default(NOT_STARTED)
+  reminderTime String?     @default("19:00")
+  archivedAt   DateTime?
+  createdAt    DateTime    @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("habits")
+}
