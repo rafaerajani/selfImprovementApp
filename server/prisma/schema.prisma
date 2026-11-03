@@ -51,7 +51,36 @@ model Habit {
   archivedAt   DateTime?
   createdAt    DateTime    @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user    User          @relation(fields: [userId], references: [id])
+  targets HabitTarget[]
+  logs    HabitLog[]
 
   @@map("habits")
+}
+
+model HabitTarget {
+  id            String   @id @default(uuid())
+  habitId       String
+  target        Int
+  effectiveFrom DateTime @db.Date
+  createdAt     DateTime @default(now())
+
+  habit Habit @relation(fields: [habitId], references: [id])
+
+  @@unique([habitId, effectiveFrom])
+  @@map("habit_targets")
+}
+
+model HabitLog {
+  id        String   @id @default(uuid())
+  habitId   String
+  logDate   DateTime @db.Date
+  amount    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  habit Habit @relation(fields: [habitId], references: [id])
+
+  @@unique([habitId, logDate])
+  @@map("habit_logs")
 }
